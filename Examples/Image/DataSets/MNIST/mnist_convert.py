@@ -1,5 +1,9 @@
-﻿import sys
-import urllib
+﻿from __future__ import print_function
+try: 
+    from urllib.request import urlretrieve 
+except ImportError: 
+    from urllib import urlretrieve
+import sys
 import gzip
 import shutil
 import os
@@ -8,7 +12,7 @@ import numpy as np
 
 def loadData(src, cimg):
     print ('Downloading ' + src)
-    gzfname, h = urllib.urlretrieve(src, './delete.me')
+    gzfname, h = urlretrieve(src, './delete.me')
     print ('Done.')
     try:
         with gzip.open(gzfname) as gz:
@@ -31,9 +35,9 @@ def loadData(src, cimg):
     return res.reshape((cimg, crow * ccol))
 
 def loadLabels(src, cimg):
-    print 'Downloading ' + src
-    gzfname, h = urllib.urlretrieve(src, './delete.me')
-    print 'Done.'
+    print ('Downloading ' + src)
+    gzfname, h = urlretrieve(src, './delete.me')
+    print ('Done.')
     try:
         with gzip.open(gzfname) as gz:
             n = struct.unpack('I', gz.read(4))
@@ -57,7 +61,7 @@ def load(dataSrc, labelsSrc, cimg):
 
 def savetxt(filename, ndarray):
     with open(filename, 'w') as f:
-        labels = map(' '.join, np.eye(10, dtype=np.uint).astype(str))
+        labels = list(map(' '.join, np.eye(10, dtype=np.uint).astype(str)))
         for row in ndarray:
             row_str = row.astype(str)
             label_str = labels[row[-1]]
@@ -67,11 +71,11 @@ def savetxt(filename, ndarray):
 if __name__ == "__main__":
     train = load('http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz',
         'http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz', 60000)
-    print 'Writing train text file...'
+    print ('Writing train text file...')
     savetxt(r'./Train-28x28_cntk_text.txt', train)
-    print 'Done.'
+    print ('Done.')
     test = load('http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz',
         'http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz', 10000)
-    print 'Writing test text file...'
+    print ('Writing test text file...')
     savetxt(r'./Test-28x28_cntk_text.txt', test)
-    print 'Done.'
+    print ('Done.')
