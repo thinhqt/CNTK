@@ -1,18 +1,13 @@
-from __future__ import print_function
-try: 
-    from urllib.request import urlretrieve 
-except ImportError: 
-    from urllib import urlretrieve
 import sys
+import urllib.request
 import gzip
-import shutil
 import os
 import struct
 import numpy as np
 
 def loadData(src, cimg):
     print ('Downloading ' + src)
-    gzfname, h = urlretrieve(src, './delete.me')
+    gzfname, h = urllib.request.urlretrieve(src, './delete.me')
     print ('Done.')
     try:
         with gzip.open(gzfname) as gz:
@@ -36,7 +31,7 @@ def loadData(src, cimg):
 
 def loadLabels(src, cimg):
     print ('Downloading ' + src)
-    gzfname, h = urlretrieve(src, './delete.me')
+    gzfname, h = urllib.request.urlretrieve(src, './delete.me')
     print ('Done.')
     try:
         with gzip.open(gzfname) as gz:
@@ -54,13 +49,14 @@ def loadLabels(src, cimg):
         os.remove(gzfname)
     return res.reshape((cimg, 1))
 
+
 def load(dataSrc, labelsSrc, cimg):
     data = loadData(dataSrc, cimg)
     labels = loadLabels(labelsSrc, cimg)
     return np.hstack((data, labels))
 
 def savetxt(filename, ndarray):
-    with open(filename, 'w') as f:
+    with open(filename, 'w', encoding="ascii") as f:
         labels = list(map(' '.join, np.eye(10, dtype=np.uint).astype(str)))
         for row in ndarray:
             row_str = row.astype(str)
@@ -72,10 +68,10 @@ if __name__ == "__main__":
     train = load('http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz',
         'http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz', 60000)
     print ('Writing train text file...')
-    savetxt(r'./Train-28x28_cntk_text.txt', train)
+    savetxt(r'./Train-28x28_cntk_text.txt', train)  
     print ('Done.')
     test = load('http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz',
-        'http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz', 10000)
+        'http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz', 10000)  
     print ('Writing test text file...')
     savetxt(r'./Test-28x28_cntk_text.txt', test)
     print ('Done.')

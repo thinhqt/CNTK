@@ -20,16 +20,31 @@ testCases:
   Epochs must be finished with expected results:
     patterns:
       - Finished Epoch[{{integer}} of {{integer}}]
+<<<<<<< HEAD
       - rmse = {{float,tolerance=1%}} * {{integer}}
+=======
+      - ce = {{float,tolerance=1%}} * {{integer}}
+      - errs = {{float,tolerance=1%}}% * {{integer}}
+>>>>>>> 216029bfedd92253fd45034da1d1cc68c4d4c7f1
       - totalSamplesSeen = {{integer}}
       - learningRatePerSample = {{float,tolerance=0.001%}}
 
   Per-minibatch training results must match:
     patterns:
       - Epoch[{{integer}} of {{integer}}]-Minibatch[{{integer}}-{{integer}}
+<<<<<<< HEAD
       - rmse = {{float,tolerance=1%}} * {{integer}}
+=======
+      - ce = {{float,tolerance=1%}} * {{integer}}
+      - errs = {{float,tolerance=1%}}% * {{integer}}
+>>>>>>> 216029bfedd92253fd45034da1d1cc68c4d4c7f1
 
   Final test results must match:
     patterns:
       - "Final Results: Minibatch[{{integer}}-{{integer}}]"
+<<<<<<< HEAD
       - rmse = {{float,tolerance=1%}} * {{integer}}
+=======
+      - errs = {{float,tolerance=1%}}% * {{integer}}
+      - ce = {{float,tolerance=1%}} * {{integer}}
+>>>>>>> 216029bfedd92253fd45034da1d1cc68c4d4c7f1
