@@ -26,7 +26,7 @@
 #include "ScriptableObjects.h"
 #include "BrainScriptEvaluator.h"
 #include "BrainScriptParser.h"
-#include "PostStat.h"
+#include "PostComputingActions.h"
 
 #include <string>
 #include <chrono>
@@ -238,11 +238,11 @@ template void DoEdit<double>(const ConfigParameters& config);
 template void DoEdit<float>(const ConfigParameters& config);
 
 // ===========================================================================
-// DoPostBatchNormalStat() - implements CNTK "pbn" command
+// DoBatchNormalizationStat() - implements CNTK "bnstat" command
 // ===========================================================================
 
 template <typename ElemType>
-void DoPostBatchNormalStat(const ConfigParameters& config)
+void DoBatchNormalizationStat(const ConfigParameters& config)
 {
     ConfigParameters readerConfig(config(L"reader"));
     readerConfig.Insert("traceLevel", config(L"traceLevel", "0"));
@@ -271,11 +271,11 @@ void DoPostBatchNormalStat(const ConfigParameters& config)
                            config(L"traceNodeNamesCategory", ConfigParameters::Array(stringargvector())),
                            config(L"traceNodeNamesSparse",   ConfigParameters::Array(stringargvector())));
 
-    PostStatistics<ElemType> postStatistics(net, MPIWrapper::GetInstance(), enableDistributedMBReading, traceLevel);
+    PostComputingActions<ElemType> postComputingActions(net, MPIWrapper::GetInstance(), enableDistributedMBReading, traceLevel);
 
-    postStatistics.PostBatchNormalStatistics(dataReader.get(), evalNodeNames, newModelPath, mbSize[0], itersPerNode);
+    postComputingActions.BatchNormalizationStatistics(dataReader.get(), evalNodeNames, newModelPath, mbSize[0], itersPerNode);
 }
 
-template void DoPostBatchNormalStat<double>(const ConfigParameters& config);
-template void DoPostBatchNormalStat<float>(const ConfigParameters& config);
+template void DoBatchNormalizationStat<double>(const ConfigParameters& config);
+template void DoBatchNormalizationStat<float>(const ConfigParameters& config);
 

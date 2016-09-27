@@ -440,7 +440,7 @@ EVAL:=eval
 SGDLIB_SRC=\
 	$(SOURCEDIR)/SGDLib/Profiler.cpp \
 	$(SOURCEDIR)/SGDLib/SGD.cpp \
-	$(SOURCEDIR)/SGDLib/PostStat.cpp \
+	$(SOURCEDIR)/SGDLib/PostComputingActions.cpp \
 	
 EVAL_SRC=\
 	$(SOURCEDIR)/EvalDll/CNTKEval.cpp \

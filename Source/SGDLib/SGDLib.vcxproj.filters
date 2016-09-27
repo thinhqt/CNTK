@@ -10,7 +10,7 @@
     <ClCompile Include="SGD.cpp">
       <Filter>SGD</Filter>
     </ClCompile>
-    <ClCompile Include="PostStat.cpp">
+    <ClCompile Include="PostComputingActions.cpp">
       <Filter>Stat</Filter>
     </ClCompile>
   </ItemGroup>
@@ -129,7 +129,7 @@
     <ClInclude Include="Criterion.h">
       <Filter>SGD</Filter>
     </ClInclude>
-    <ClInclude Include="PostStat.h">
+    <ClInclude Include="PostComputingActions.h">
       <Filter>Stat</Filter>
     </ClInclude>
   </ItemGroup>

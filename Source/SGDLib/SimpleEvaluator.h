@@ -52,36 +52,7 @@ public:
     {
         ScopedNetworkOperationMode modeGuard(m_net, NetworkOperationMode::inferring);
 
-        // determine nodes to evaluate
-        std::vector<ComputationNodeBasePtr> evalNodes;
-
-        set<ComputationNodeBasePtr> criteriaLogged; // (keeps track ot duplicates to avoid we don't double-log critera)
-        if (evalNodeNames.size() == 0)
-        {
-            fprintf(stderr, "evalNodeNames are not specified, using all the default evalnodes and training criterion nodes.\n");
-            if (m_net->EvaluationNodes().empty() && m_net->FinalCriterionNodes().empty())
-                InvalidArgument("There is no default evaluation node or training criterion specified in the network.");
-
-            for (const auto& node : m_net->EvaluationNodes())
-                if (criteriaLogged.insert(node).second)
-                    evalNodes.push_back(node);
-
-            for (const auto& node : m_net->FinalCriterionNodes())
-                if (criteriaLogged.insert(node).second)
-                    evalNodes.push_back(node);
-        }
-        else
-        {
-            for (int i = 0; i < evalNodeNames.size(); i++)
-            {
-                const auto& node = m_net->GetNodeFromName(evalNodeNames[i]);
-                if (!criteriaLogged.insert(node).second)
-                    continue;
-                if (node->GetSampleLayout().GetNumElements() != 1)
-                    InvalidArgument("Criterion nodes to evaluate must have dimension 1x1.");
-                evalNodes.push_back(node);
-            }
-        }
+        let evalNodes = m_net->GetEvalNodesWithName(evalNodeNames);
 
         // initialize eval results
         std::vector<EpochCriterion> evalResults(evalNodes.size(), EpochCriterion(0));

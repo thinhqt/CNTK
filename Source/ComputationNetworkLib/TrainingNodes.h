@@ -8,6 +8,7 @@
 #include "ComputationNode.h"
 #include "BatchNormalizationEngine.h"
 #include "RNGHandle.h"
+#include "InputAndParamNodes.h"
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
@@ -2011,11 +2012,19 @@ public:
     // ResetStatisticsState will set the batch normal statistics into initial state
     // used for re-statistics the mean and variance of BN
     // any others use may lead undependable results, please be careful
-    void ResetStatisiticsState()
+    void ResetStatisticsState()
     {
         m_samplesSeen = 0;
         m_normTimeConst = 0;
         m_blendTimeConst = 0;
+    }
+    // Turn off the L1 and L2 regularization
+    void DisableRegInBatchNormalization()
+    {
+        let scaleNode   = dynamic_pointer_cast<LearnableParameter<ElemType>>(Input(1));
+        let biasNode    = dynamic_pointer_cast<LearnableParameter<ElemType>>(Input(2));
+        scaleNode->SetRegMultiplier(0.f);
+        biasNode->SetRegMultiplier(0.f);
     }
     double NormalizationTimeConstant() const { return m_normTimeConst; }
     double BlendTimeConstant() const { return m_blendTimeConst; }

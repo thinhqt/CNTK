@@ -43,7 +43,7 @@ void DoDumpNodes(const ConfigParameters& config);
 template <typename ElemType>
 void DoEdit(const ConfigParameters& config);
 template <typename ElemType>
-void DoPostBatchNormalStat(const ConfigParameters& config);
+void DoBatchNormalizationStat(const ConfigParameters& config);
 
 // evaluation (EvalActions.cpp)
 template <typename ElemType>

@@ -294,7 +294,7 @@ protected:
     // decide whether should apply L2 regularization into BatchNormalizationNode
     // true: disable L2 Regularization
     // false: enable L2 Regularization (default)
-    bool m_disableL2RegBatchNormal;
+    bool m_disableRegInBatchNormalization;
 };
 
 template <class ElemType>
