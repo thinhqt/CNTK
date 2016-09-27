@@ -18,7 +18,7 @@ FunctionPtr SetupFullyConnectedDNNLayer(Variable, size_t, const DeviceDescriptor
 void RunEvaluation(FunctionPtr, const DeviceDescriptor&);
 
 /// <summary>
-/// Shows how to create Function whose parameters can be shared by multi threads during evaluation.
+/// Shows how to create Function whose parameters can be shared by multi evaluation threads.
 /// </summary>
 /// <description>
 /// It first creates all parameters needed for the Function, and then spawns multi threads. 
@@ -67,54 +67,7 @@ void MultiThreadsEvaluationWithNewFunction(const DeviceDescriptor& device, const
 }
 
 /// <summary>
-/// Shows how to use Clone() to create a new instance of function whose parameters are shared among all cloned functions.
-/// </summary>
-/// <description>
-/// It first creates a new function with parameters, then spawns multi threads. Each thread uses Clone() to create a new 
-/// instance of function and then use this instance to do evaluation. 
-/// All cloned functions share only one single instance of parameters.
-/// </description>
-void MultiThreadsEvaluationWithClone(const DeviceDescriptor& device, const int threadCount)
-{
-    using namespace std::placeholders;
-
-    const size_t inputDim = 937;
-    const size_t numOutputClasses = 9304;
-    const size_t numHiddenLayers = 6;
-    const size_t hiddenLayersDim = 2048;
-
-    auto inputVar = InputVariable({inputDim}, DataType::Float, L"features");
-
-    assert(numHiddenLayers >= 1);
-    auto classifierRoot = SetupFullyConnectedDNNLayer(inputVar, hiddenLayersDim, device, std::bind(Sigmoid, _1, L""));
-    for (size_t i = 1; i < numHiddenLayers; ++i)
-        classifierRoot = SetupFullyConnectedDNNLayer(classifierRoot, hiddenLayersDim, device, std::bind(Sigmoid, _1, L""));
-
-    auto outputTimesParam = Parameter(NDArrayView::RandomUniform<float>({numOutputClasses, hiddenLayersDim}, -0.5, 0.5, 1, device));
-    auto classifierFunc = Times(outputTimesParam, classifierRoot, 1, L"classifierOutput");
-
-    // Now test the structure
-    if (classifierFunc->Parameters().size() != ((numHiddenLayers * 2) + 1))
-        throw std::runtime_error("MultiThreadsEvaluationWithClone: Function does not have expected Parameter count");
-
-    // Run evaluation in parallel
-    std::vector<std::thread> threadList(threadCount);
-    for (int th = 0; th < threadCount; ++th)
-    {
-        threadList[th] = std::thread(RunEvaluation, classifierFunc->Clone(), device);
-    }
-
-    for (int th = 0; th < threadCount; ++th)
-    {
-        threadList[th].join();
-        fprintf(stderr, "thread %d joined.\n", th);
-        fflush(stderr);
-    }
-}
-
-
-/// <summary>
-/// Shows how to use Clone() to create a new instance of function whose parameters are shared among all cloned functions.
+/// Shows how to use Clone() to share function parameters among multi evaluation threads.
 /// </summary>
 /// <description>
 /// It first creates a new function with parameters, then spawns multi threads. Each thread uses Clone() to create a new 
