@@ -88,14 +88,18 @@ void MultiThreadsEvaluationWithClone(const DeviceDescriptor& device, const int t
     assert(numHiddenLayers >= 1);
     auto classifierRoot = SetupFullyConnectedDNNLayer(inputVar, hiddenLayersDim, device, std::bind(Sigmoid, _1, L""));
     for (size_t i = 1; i < numHiddenLayers; ++i)
+    {
         classifierRoot = SetupFullyConnectedDNNLayer(classifierRoot, hiddenLayersDim, device, std::bind(Sigmoid, _1, L""));
+    }
 
     auto outputTimesParam = Parameter(NDArrayView::RandomUniform<float>({numOutputClasses, hiddenLayersDim}, -0.5, 0.5, 1, device));
     auto classifierFunc = Times(outputTimesParam, classifierRoot, 1, L"classifierOutput");
 
     // Now test the structure
     if (classifierFunc->Parameters().size() != ((numHiddenLayers * 2) + 1))
+    {
         throw std::runtime_error("MultiThreadsEvaluationWithClone: Function does not have expected Parameter count");
+    }
 
     // Run evaluation in parallel
     std::vector<std::thread> threadList(threadCount);
@@ -141,7 +145,9 @@ inline FunctionPtr FullyConnectedFeedForwardClassifierNetWithSharedParameters(Va
     auto classifierRoot = FullyConnectedDNNLayerWithSharedParameters(input, inputTimesParam, inputPlusParam, nonLinearity);
 
     for (size_t i = 1; i < numHiddenLayers; ++i)
+    {
         classifierRoot = FullyConnectedDNNLayerWithSharedParameters(classifierRoot, hiddenLayerTimesParam[i - 1], hiddenLayerPlusParam[i - 1], nonLinearity);
+    }
 
     // Todo: assume that outputTimesParam has matched output dim and hiddenLayerDim
     classifierRoot = Times(outputTimesParam, classifierRoot);
@@ -178,13 +184,19 @@ void CreateFunctionAndEvaluateWithSharedParameters(size_t inputDim,
     auto ffNet = CNTK::Combine({trainingLossFunction, predictionFunction, classifierOutputFunction}, L"ClassifierModel");
 
     if (ffNet->Parameters().size() != ((numHiddenLayers * 2) + 1))
+    {
         throw std::runtime_error("CreateFunctionAndEvaluateWithSharedParameters: Function does not have expected Parameter count");
+    }
 
     if (ffNet->Arguments().size() != 2)
+    {
         throw std::runtime_error("CreateFunctionAndEvaluateWithSharedParameters: Function does not have expected Argument count");
+    }
 
     if (ffNet->Outputs().size() != 3)
+    {
         throw std::runtime_error("CreateFunctionAndEvaluateWithSharedParameters: Function does not have expected Output count");
+    }
 
     // Evaluate the network in several runs 
     size_t iterationCount = 4;
@@ -195,14 +207,18 @@ void CreateFunctionAndEvaluateWithSharedParameters(size_t inputDim,
     {
         std::vector<float> inputData(inputDim * numSamples);
         for (size_t i = 0; i < inputData.size(); ++i)
+        {
             inputData[i] = ((float)rand()) / RAND_MAX;
+        }
 
         NDShape inputShape = {inputDim, 1, numSamples};
         ValuePtr inputValue = MakeSharedObject<Value>(MakeSharedObject<NDArrayView>(inputShape, inputData.data(), inputData.size(), computeDevice, true));
 
         std::vector<float> labelData(numOutputClasses * numSamples, 0);
         for (size_t i = 0; i < numSamples; ++i)
+        {
             labelData[(i*numOutputClasses) + (rand() % numOutputClasses)] = 1;
+        }
 
         NDShape labelShape = {numOutputClasses, 1, numSamples};
         ValuePtr labelValue = MakeSharedObject<Value>(MakeSharedObject<NDArrayView>(labelShape, labelData.data(), labelData.size(), computeDevice, true));
@@ -267,7 +283,9 @@ void RunEvaluation(FunctionPtr evalFunc, const DeviceDescriptor& device)
     {
         std::vector<float> inputData(inputDim * numSamples);
         for (size_t i = 0; i < inputData.size(); ++i)
+        {
             inputData[i] = ((float)rand()) / RAND_MAX;
+        }
 
         NDShape inputShape = {inputDim, 1, numSamples};
         ValuePtr inputValue = MakeSharedObject<Value>(MakeSharedObject<NDArrayView>(inputShape, inputData.data(), inputData.size(), device, true));
