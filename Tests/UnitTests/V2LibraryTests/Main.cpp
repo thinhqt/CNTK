@@ -23,34 +23,37 @@ void MultiThreadsEvaluationWithClone(const DeviceDescriptor&, const int);
 
 int main()
 {
-    //NDArrayViewTests();
-    //TensorTests();
-    //FunctionTests();
+    NDArrayViewTests();
+    TensorTests();
+    FunctionTests();
 
-    //FeedForwardTests();
-    //RecurrentFunctionTests();
+    FeedForwardTests();
+    RecurrentFunctionTests();
 
-    //TrainerTests();
-    //SerializationTests();
-    //LearnerTests();
+    TrainerTests();
+    SerializationTests();
+    LearnerTests();
 
-    //TestCifarResnet();
-    //TrainLSTMSequenceClassifer();
+    TestCifarResnet();
+    TrainLSTMSequenceClassifer();
 
-    //TrainSequenceToSequenceTranslator();
+    TrainSequenceToSequenceTranslator();
 
-    // Test multi-threads evaluation
-    /*fprintf(stderr, "Test multi-threaded evaluation on CPU.\n");
+    // Test multi-threads evaluation with new function
+    fprintf(stderr, "Test multi-threaded evaluation with new function on CPU.\n");
     MultiThreadsEvaluationWithNewFunction(DeviceDescriptor::CPUDevice(), 2);
 #ifndef CPUONLY
-    fprintf(stderr, "Test multi-threaded evaluation on GPU\n");
+    fprintf(stderr, "Test multi-threaded evaluation with new function on GPU\n");
     MultiThreadsEvaluationWithNewFunction(DeviceDescriptor::GPUDevice(0), 2);
-#endif*/
+#endif
 
     //// Test multi-threads evaluation using clone.
-    //// Todo: Also test on GPUDevice()
-    //MultiThreadsEvaluationWithClone(DeviceDescriptor::CPUDevice(), 2);
-    MultiThreadsEvaluationWithClone(DeviceDescriptor::CPUDevice(), 20);
+    fprintf(stderr, "Test multi-threaded evaluation using clone on CPU.\n");
+    MultiThreadsEvaluationWithClone(DeviceDescriptor::CPUDevice(), 2);
+#ifndef CPUONLY
+    fprintf(stderr, "Test multi-threaded evaluation using clone on GPU.\n");
+    MultiThreadsEvaluationWithClone(DeviceDescriptor::GPUDevice(0), 2);
+#endif
 
     fprintf(stderr, "\nCNTKv2Library tests: Passed\n");
     fflush(stderr);

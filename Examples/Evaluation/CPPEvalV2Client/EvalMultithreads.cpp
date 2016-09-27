@@ -112,10 +112,10 @@ void MultiThreadsEvaluationWithClone(const DeviceDescriptor& device, const int t
     }
 }
 
-FunctionPtr FullyConnectedDNNLayerWithSharedParameters(Variable input,
-                                                       const Parameter& timesParam,
-                                                       const Parameter& plusParam,
-                                                       const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity)
+inline FunctionPtr FullyConnectedDNNLayerWithSharedParameters(Variable input,
+                                                              const Parameter& timesParam,
+                                                              const Parameter& plusParam,
+                                                              const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity)
 {
     assert(input.Shape().Rank() == 1);
 
@@ -128,14 +128,14 @@ FunctionPtr FullyConnectedDNNLayerWithSharedParameters(Variable input,
     return nonLinearity(plusFunction);
 }
 
-FunctionPtr FullyConnectedFeedForwardClassifierNetWithSharedParameters(Variable input,
-                                                                       size_t numHiddenLayers,
-                                                                       const Parameter& inputTimesParam,
-                                                                       const Parameter& inputPlusParam,
-                                                                       const Parameter hiddenLayerTimesParam[],
-                                                                       const Parameter hiddenLayerPlusParam[],
-                                                                       const Parameter& outputTimesParam,
-                                                                       const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity)
+inline FunctionPtr FullyConnectedFeedForwardClassifierNetWithSharedParameters(Variable input,
+                                                                              size_t numHiddenLayers,
+                                                                              const Parameter& inputTimesParam,
+                                                                              const Parameter& inputPlusParam,
+                                                                              const Parameter hiddenLayerTimesParam[],
+                                                                              const Parameter hiddenLayerPlusParam[],
+                                                                              const Parameter& outputTimesParam,
+                                                                              const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity)
 {
     assert(numHiddenLayers >= 1);
     auto classifierRoot = FullyConnectedDNNLayerWithSharedParameters(input, inputTimesParam, inputPlusParam, nonLinearity);
@@ -214,7 +214,7 @@ void CreateFunctionAndEvaluateWithSharedParameters(size_t inputDim,
 }
 
 
-FunctionPtr SetupFullyConnectedLinearLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::wstring& outputName = L"")
+inline FunctionPtr SetupFullyConnectedLinearLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::wstring& outputName = L"")
 {
     assert(input.Shape().Rank() == 1);
     size_t inputDim = input.Shape()[0];
@@ -226,7 +226,7 @@ FunctionPtr SetupFullyConnectedLinearLayer(Variable input, size_t outputDim, con
     return CNTK::Plus(plusParam, timesFunction, outputName);
 }
 
-FunctionPtr SetupFullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity)
+inline FunctionPtr SetupFullyConnectedDNNLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::function<FunctionPtr(const FunctionPtr&)>& nonLinearity)
 {
     return nonLinearity(SetupFullyConnectedLinearLayer(input, outputDim, device));
 }
