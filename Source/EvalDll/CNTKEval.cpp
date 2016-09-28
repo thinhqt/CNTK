@@ -260,7 +260,7 @@ VariableLayout CNTKEvalExtended<ElemType>::ToVariableLayout(const ComputationNod
 template<typename ElemType>
 void CNTKEvalExtended<ElemType>::StartForwardEvaluation(const std::vector<wstring>& outputNodeNames)
 {
-    m_scopedNetworkOperationMode = make_shared<ScopedNetworkOperationMode>(this->m_net, NetworkOperationMode::inferring);
+    // m_scopedNetworkOperationMode = make_shared<ScopedNetworkOperationMode>(this->m_net, NetworkOperationMode::inferring);
     m_outputNodes  = this->m_net->OutputNodesByName(outputNodeNames);
     m_inputNodes = this->m_net->InputNodesForOutputs(outputNodeNames);
     // allocate memory for forward computation
