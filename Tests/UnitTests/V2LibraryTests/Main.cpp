@@ -18,8 +18,7 @@ void TrainLSTMSequenceClassifer();
 void SerializationTests();
 void LearnerTests();
 void TrainSequenceToSequenceTranslator();
-void MultiThreadsEvaluationWithNewFunction(const DeviceDescriptor&, const int);
-void MultiThreadsEvaluationWithClone(const DeviceDescriptor&, const int);
+void MultiThreadsEvaluation();
 
 int main()
 {
@@ -39,21 +38,7 @@ int main()
 
     TrainSequenceToSequenceTranslator();
 
-    // Test multi-threads evaluation with new function
-    fprintf(stderr, "Test multi-threaded evaluation with new function on CPU.\n");
-    MultiThreadsEvaluationWithNewFunction(DeviceDescriptor::CPUDevice(), 2);
-#ifndef CPUONLY
-    fprintf(stderr, "Test multi-threaded evaluation with new function on GPU\n");
-    MultiThreadsEvaluationWithNewFunction(DeviceDescriptor::GPUDevice(0), 2);
-#endif
-
-    //// Test multi-threads evaluation using clone.
-    fprintf(stderr, "Test multi-threaded evaluation using clone on CPU.\n");
-    MultiThreadsEvaluationWithClone(DeviceDescriptor::CPUDevice(), 2);
-#ifndef CPUONLY
-    fprintf(stderr, "Test multi-threaded evaluation using clone on GPU.\n");
-    MultiThreadsEvaluationWithClone(DeviceDescriptor::GPUDevice(0), 2);
-#endif
+    MultiThreadsEvaluation();
 
     fprintf(stderr, "\nCNTKv2Library tests: Passed\n");
     fflush(stderr);
