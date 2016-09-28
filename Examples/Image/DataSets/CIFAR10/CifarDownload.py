@@ -1,11 +1,15 @@
-﻿import sys
-import urllib
+﻿from __future__ import print_function
+try: 
+    from urllib.request import urlretrieve 
+except ImportError: 
+    from urllib import urlretrieve
+import sys
 import tarfile
 import shutil
 import os
 import struct
 import numpy as np
-import cPickle as cp
+import pickle as cp
 import getopt
 
 ImgSize = 32
@@ -13,7 +17,10 @@ NumFeat = ImgSize * ImgSize * 3
 
 def readBatch(src, outFmt):
     with open(src, 'rb') as f:
-        d = cp.load(f)
+        if sys.version_info[0] < 3: 
+            d = cp.load(f) 
+        else:
+            d = cp.load(f, encoding='latin1')
         # Note: most of the frameworks use spatial-major (aka NCHW) input format:
         # R0..RN,G0..GN,B0..BN
         # There are 2 possible options in CNTK:
@@ -40,7 +47,7 @@ def readBatch(src, outFmt):
 
 def loadData(src, outFmt):
     print ('Downloading ' + src)
-    fname, h = urllib.urlretrieve(src, './delete.me')
+    fname, h = urlretrieve(src, './delete.me')
     print ('Done.')
     try:
         print ('Extracting files...')
@@ -86,7 +93,7 @@ def parseCmdOpt(argv):
 
 def savetxt(filename, ndarray):
     with open(filename, 'w') as f:
-        labels = map(' '.join, np.eye(10, dtype=np.uint).astype(str))
+        labels = list(map(' '.join, np.eye(10, dtype=np.uint).astype(str)))
         for row in ndarray:
             row_str = row.astype(str)
             label_str = labels[row[-1]]

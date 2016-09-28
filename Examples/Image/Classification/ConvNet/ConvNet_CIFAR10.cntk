@@ -1,4 +1,4 @@
-# Simple CIFAR-10 convnet, without and with BatchNormalization.
+# ConvNet applied on CIFAR-10 dataset, with no data augmentation.
 
 command = TrainConvNet:Eval
 

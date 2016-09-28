@@ -1,7 +1,4 @@
-# Parameters can be overwritten on the command line
-# for example: cntk configFile=myConfigFile rootDir=../.. 
-# For running from Visual Studio add
-# currentDirectory=$(SolutionDir)/<path to corresponding data folder> 
+# Multi-layer perceptron (MLP) on MNIST dataset. 
 
 command = trainNetwork:testNetwork
 
@@ -25,9 +22,9 @@ trainNetwork = {
         
         model = Sequential (
             Scale {featScale} :
-            DenseLayer         {768} : Dropout: ReLU : 
-            DenseLayer         {512} : Dropout: ReLU : 
-            DenseLayer         {256} : Dropout: ReLU :  
+            DenseLayer         {768, init="gaussian", initValueScale=1.5} : Dropout: ReLU : 
+            DenseLayer         {512, init="gaussian", initValueScale=1.5} : Dropout: ReLU : 
+            DenseLayer         {256, init="gaussian", initValueScale=1.5} : Dropout: ReLU :  
             LinearLayer        {labelDim}
         )
 

@@ -1,7 +1,4 @@
-# Parameters can be overwritten on the command line
-# for example: cntk configFile=myConfigFile rootDir=../.. 
-# For running from Visual Studio add
-# currentDirectory=$(SolutionDir)/<path to corresponding data folder> 
+# ConvNet on MNIST dataset. 
 
 command = trainNetwork:testNetwork
 

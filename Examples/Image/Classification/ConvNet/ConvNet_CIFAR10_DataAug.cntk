@@ -1,4 +1,4 @@
-# Simple CIFAR-10 convnet, without and with BatchNormalization.
+# ConvNet applied on CIFAR-10 dataset, with data augmentation (translation and flipping).
 
 command = TrainConvNet:Eval
 
@@ -92,13 +92,12 @@ Eval = {
     minibatchSize = 512
 
     reader = {
-        verbosity = 0 ; randomize = "none"
+        verbosity = 0 ; randomize = false
         deserializers = ({
             type = "ImageDeserializer" ; module = "ImageReader"
             file = "$dataDir$/test_map.txt"
             input = {
                 features = { transforms = (
-                   { type = "Crop" ; cropType = "center" ; cropRatio = 1 } : 
                    { type = "Scale" ; width = 32 ; height = 32 ; channels = 3 ; interpolations = "linear" } :
                    { type = "Mean"; meanFile = "$dataDir$/CIFAR10_mean.xml" } : 
                    { type = "Transpose" }

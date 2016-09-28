@@ -1,7 +1,8 @@
+from __future__ import print_function
 import os
 import sys
 import struct
-import cPickle as cp
+import pickle as cp
 from PIL import Image
 import numpy as np
 import xml.etree.cElementTree as et
@@ -50,7 +51,7 @@ def saveMean(fname, data):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print "Usage: CifarConverter.py <path to CIFAR-10 dataset directory>\nCIFAR-10 dataset (Python version) can be downloaded from http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
+        print ("Usage: CifarConverter.py <path to CIFAR-10 dataset directory>\nCIFAR-10 dataset (Python version) can be downloaded from http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz")
         sys.exit(1)
     rootDir = sys.argv[1]
     trainDir = 'train'
@@ -65,7 +66,10 @@ if __name__ == "__main__":
         with open('train_regrLabels.txt', 'w') as regrFile:
             for ifile in range(1, 6):
                 with open(os.path.join(rootDir, 'data_batch_' + str(ifile)), 'rb') as f:
-                    data = cp.load(f)
+                    if sys.version_info[0] < 3: 
+                        data = cp.load(f)
+                    else: 
+                        data = cp.load(f, encoding='latin1')
                     for i in range(10000):
                         fname = os.path.join(os.path.abspath(trainDir), ('%05d.png' % (i + (ifile - 1) * 10000)))
                         saveImage(fname, data['data'][i, :], data['labels'][i], mapFile, regrFile, 4, mean=dataMean)
@@ -74,7 +78,10 @@ if __name__ == "__main__":
     with open('test_map.txt', 'w') as mapFile:
         with open('test_regrLabels.txt', 'w') as regrFile:
             with open(os.path.join(rootDir, 'test_batch'), 'rb') as f:
-                data = cp.load(f)
+                if sys.version_info[0] < 3: 
+                    data = cp.load(f)
+                else: 
+                    data = cp.load(f, encoding='latin1')
                 for i in range(10000):
                     fname = os.path.join(os.path.abspath(testDir), ('%05d.png' % i))
                     saveImage(fname, data['data'][i, :], data['labels'][i], mapFile, regrFile, 0)
