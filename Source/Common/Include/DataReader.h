@@ -204,6 +204,11 @@ public:
         return false;
     };
 
+    virtual bool IsLegacyReader() const
+    {
+        return true;
+    };
+
     virtual void StartDistributedMinibatchLoop(size_t mbSize, size_t epoch, size_t subsetNum, size_t numSubsets, size_t requestedEpochSamples = requestDataSize)
     {
         if (SupportsDistributedMBRead() || (numSubsets != 1) || (subsetNum != 0))

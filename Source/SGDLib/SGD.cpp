@@ -152,6 +152,13 @@ void SGD<ElemType>::TrainOrAdaptModel(int startEpoch, ComputationNetworkPtr net,
         }
     }
 
+    if (m_mpi != nullptr && !trainSetDataReader->IsLegacyReader())
+    {
+        // we're running a parallel training with a v2 reader, 
+        // auto-enable distributed reading
+        m_enableDistributedMBReading = true;
+    }
+
     // determine evaluationNodes from GetEvalCriterionNodes(), ensuring each criterion is only logged once
     std::vector<ComputationNodeBasePtr> evaluationNodes;
     {
@@ -323,7 +330,8 @@ void SGD<ElemType>::TrainOrAdaptModel(int startEpoch, ComputationNetworkPtr net,
     {
         // Synchronize all ranks before writing the model to ensure that
         // everyone is done loading the model
-        if (m_mpi != nullptr)
+        if (
+ != nullptr)
         {
             m_mpi->WaitAll();
         }

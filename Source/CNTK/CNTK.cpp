@@ -551,8 +551,17 @@ int wmainWithBS(int argc, wchar_t* argv[]) // called from wmain which is a wrapp
     shared_ptr<Microsoft::MSR::CNTK::MPIWrapper> mpi;
     auto ensureMPIWrapperCleanup = MakeScopeExit(&MPIWrapper::DeleteInstance);
     bool paralleltrain = config(L"parallelTrain", false);
+
+    if (!paralleltrain && MPIWrapper::GetTotalNumberOfMPINodes() > 1)
+    {
+        // auto-enable parallelTrain when running under MPI with more than one node
+        paralleltrain = true;
+    }
+
     if (paralleltrain)
+    {
         mpi = MPIWrapper::GetInstance(true /*create*/);
+    }  
 
     g_shareNodeValueMatrices = config(L"shareNodeValueMatrices", false);
 
@@ -687,8 +696,23 @@ int wmainOldCNTKConfig(int argc, wchar_t* argv[])
     shared_ptr<Microsoft::MSR::CNTK::MPIWrapper> mpi;
     auto ensureMPIWrapperCleanup = MakeScopeExit(&MPIWrapper::DeleteInstance);
     bool paralleltrain = config(L"parallelTrain", "false");
+
+    fprintf(stderr, "\n Num MPI nodes: %d\n\n",  MPIWrapper::GetTotalNumberOfMPINodes());
+
+
+
+    if (!paralleltrain && MPIWrapper::GetTotalNumberOfMPINodes() > 1)
+    {
+        // auto-enable parallelTrain when running under MPI with more than one node
+        paralleltrain = true;
+    }
+
     if (paralleltrain)
-        mpi = MPIWrapper::GetInstance(true /*create*/);
+    {
+       mpi = MPIWrapper::GetInstance(true /*create*/);
+    } 
+
+    return 1;
 
     g_shareNodeValueMatrices = config(L"shareNodeValueMatrices", false);
 

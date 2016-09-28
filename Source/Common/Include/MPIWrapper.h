@@ -158,6 +158,23 @@ public:
         ::Sleep((DWORD)(500 * CurrentNodeRank()));
     }
 
+    static int GetTotalNumberOfMPINodes()
+    {
+#ifdef WIN32
+        const char* p = std::getenv("PMI_SIZE");
+#else
+        const char* p = std::getenv("OMPI_COMM_WORLD_SIZE");
+#endif
+        if (!p)
+        {
+            return 0;
+        }
+        else
+        {
+            return std::stoi(string(p));
+        }
+    }
+
     // Note: we don't clear the sub-communication here although we should, because in case of a crash, this prevents the EXE from terminating.
     // It's OK since this class is a singleton anyway that gets instantiated exactly once at program startup.
     ~MPIWrapper()
