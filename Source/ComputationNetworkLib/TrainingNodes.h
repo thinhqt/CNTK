@@ -324,12 +324,14 @@ public:
     {
         Base::RequestMatricesBeforeForwardProp(matrixPool);
         RequestMatrixFromPool(m_logOfRight, matrixPool);
+        RequestMatrixFromPool(m_leftDivRight, matrixPool);
     }
 
     // request matrices that are needed for gradient computation
     virtual void RequestMatricesBeforeBackprop(MatrixPool& matrixPool)
     {
         Base::RequestMatricesBeforeBackprop(matrixPool);
+        RequestMatrixFromPool(m_logOfRight, matrixPool);
         RequestMatrixFromPool(m_leftDivRight, matrixPool);
     }
 
