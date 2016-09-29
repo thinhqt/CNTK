@@ -122,7 +122,7 @@ public:
 private:
     static VariableLayout ToVariableLayout(const ComputationNodeBasePtr n);
     std::vector<ComputationNodeBasePtr> m_outputNodes;
-    // std::shared_ptr<ScopedNetworkOperationMode> m_scopedNetworkOperationMode;
+    std::shared_ptr<ScopedNetworkOperationMode> m_scopedNetworkOperationMode;
     std::vector<ComputationNodeBasePtr> m_inputNodes;
     StreamMinibatchInputs m_inputMatrices;
     bool m_started;
