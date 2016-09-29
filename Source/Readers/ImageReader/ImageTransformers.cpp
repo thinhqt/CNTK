@@ -260,7 +260,7 @@ PadTransformer::PadTransformer(const ConfigParameters& config) : ImageTransforme
 
 StreamDescription PadTransformer::Transform(const StreamDescription& inputStream)
 {
-    ImageTransformerBase::Transform(inputStream);
+    TransformBase::Transform(inputStream);
     m_outputStream.m_sampleLayout = std::make_shared<TensorShape>(ImageDimensions((size_t)m_targetW, (size_t)m_targetH, (size_t)m_channels).AsTensorShape(HWC));
     return m_outputStream;
 }
