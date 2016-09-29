@@ -255,6 +255,9 @@ protected:
 
     ParallelizationMethod m_parallelizationMethod;
     bool m_enableDistributedMBReading;
+    // indicates if we're using default value of the m_enableDistributedMBReading flag
+    // (in which case, it can potentially be overriden).
+    bool m_enableDistributedMBReadingNotSpecified; 
     int m_parallelizationStartEpochNum;
 
     // decide if/how often we measure and show sync performance stats (seconds spend on sync, seconds since last sync etc.) ?

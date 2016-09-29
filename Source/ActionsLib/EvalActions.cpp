@@ -39,16 +39,10 @@ using namespace std;
 using namespace Microsoft::MSR;
 using namespace Microsoft::MSR::CNTK;
 
-bool EnableDistributedReading(const ConfigParameters& config, const IDataReader& reader)
+bool GetDistributedMBReadingDefaultValue(const ConfigParameters& config, const IDataReader& reader)
 {
-    if (MPIWrapper::GetInstance() != nullptr && !reader.IsLegacyReader())
-    {
-        // we're running a parallel training with a v2 reader, 
-        // auto-enable distributed reading
-        return true;
-    }
-
-    return config(L"distributedMBReading", false);
+    // Return 'true' if we're running a parallel training with a v2 reader, 'false' otherwise.
+    return (MPIWrapper::GetInstance() != nullptr && !reader.IsLegacyReader());
 }
 
 // ===========================================================================
@@ -74,7 +68,7 @@ static void DoEvalBase(const ConfigParameters& config, IDataReader& reader)
     size_t maxSamplesInRAM = config(L"maxSamplesInRAM", (size_t)SIZE_MAX);
     size_t numSubminiBatches = config(L"numSubminibatches", (size_t)1);
 
-    bool enableDistributedMBReading = EnableDistributedReading(config, reader);
+    bool enableDistributedMBReading = config(L"distributedMBReading", GetDistributedMBReadingDefaultValue(config, reader));
 
     vector<wstring> evalNodeNamesVector;
 
@@ -116,7 +110,7 @@ static void DoEvalBNBase(const ConfigParameters& config, IDataReader& reader)
     size_t maxSamplesInRAM = config(L"maxSamplesInRAM", (size_t)SIZE_MAX);
     size_t numSubminiBatches = config(L"numSubminibatches", (size_t)1);
 
-    bool enableDistributedMBReading = EnableDistributedReading(config, reader);
+    bool enableDistributedMBReading = config(L"distributedMBReading", GetDistributedMBReadingDefaultValue(config, reader));
 
     vector<wstring> evalNodeNamesVector;
 
@@ -213,7 +207,7 @@ void DoCrossValidate(const ConfigParameters& config)
 
     DataReader cvDataReader(readerConfig);
 
-    bool enableDistributedMBReading = EnableDistributedReading(config, cvDataReader);
+    bool enableDistributedMBReading = config(L"distributedMBReading", GetDistributedMBReadingDefaultValue(config, cvDataReader));
 
     bool finalModelEvaluated = false;
     for (size_t i = cvInterval[0]; i <= cvInterval[2]; i += cvInterval[1])

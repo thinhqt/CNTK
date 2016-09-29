@@ -152,10 +152,12 @@ void SGD<ElemType>::TrainOrAdaptModel(int startEpoch, ComputationNetworkPtr net,
         }
     }
 
-    if (m_mpi != nullptr && !trainSetDataReader->IsLegacyReader())
+    if (m_enableDistributedMBReadingNotSpecified && m_mpi != nullptr && !trainSetDataReader->IsLegacyReader())
     {
         // we're running a parallel training with a v2 reader, 
         // auto-enable distributed reading
+        if (m_traceLevel > 0)
+            LOGPRINTF(stderr, "\"distributedMBReading\" is not explicitly specified, defaulting to 'true'.\n");
         m_enableDistributedMBReading = true;
     }
 
@@ -330,8 +332,7 @@ void SGD<ElemType>::TrainOrAdaptModel(int startEpoch, ComputationNetworkPtr net,
     {
         // Synchronize all ranks before writing the model to ensure that
         // everyone is done loading the model
-        if (
- != nullptr)
+        if (m_mpi != nullptr)
         {
             m_mpi->WaitAll();
         }
@@ -2695,6 +2696,7 @@ SGDParams::SGDParams(const ConfigRecordType& configSGD, size_t sizeofElemType)
         if (m_parallelizationStartEpochNum < 0 /* sic */)
             // Be explicit that user-facing epoch numbers are 1-based
             InvalidArgument("parallelizationStartEpoch must be greater or equal to 1");
+        m_enableDistributedMBReadingNotSpecified = !configParallelTrain.Exists(L"distributedMBReading");
         m_enableDistributedMBReading = configParallelTrain(L"distributedMBReading", false);
         m_syncStatsTrace = configParallelTrain(L"syncPerfStats", (int) 0);
 

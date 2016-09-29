@@ -204,6 +204,7 @@ public:
         return false;
     };
 
+    // old DataReader architecture
     virtual bool IsLegacyReader() const
     {
         return true;

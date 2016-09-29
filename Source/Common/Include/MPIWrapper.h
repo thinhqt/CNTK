@@ -136,6 +136,9 @@ public:
         MPI_Comm_size(MPI_COMM_WORLD, &m_numMPINodes);
         m_numNodesInUse = m_numMPINodes;
 
+        // Verify that the environment variable matches what the MPI API says.
+        assert(GetTotalNumberOfMPINodes() == m_numNodesInUse);
+
         // Applying MPI workaround
         s_myRank = m_myRank;
         atexit(&MPIWrapper::MPIWorkaroundAtExit);
@@ -158,6 +161,8 @@ public:
         ::Sleep((DWORD)(500 * CurrentNodeRank()));
     }
 
+    // TODO: This function does not need any MPI-specific functionality.
+    // Once we move to dynamic loading for MPI libs on Linux, move it to utilities.
     static int GetTotalNumberOfMPINodes()
     {
 #ifdef WIN32
